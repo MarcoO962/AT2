@@ -5,4 +5,6 @@ class Cave:
         self.description = None
     def get_description(self):
         return self.description
+    def describe(self):
+    print( self.description )
 
