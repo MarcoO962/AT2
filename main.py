@@ -12,4 +12,4 @@ dungeon.link_cave(grotto, "west")
 
 dungeon.get_details()
 
-daddy eli = marco
+marco is a homo
