@@ -12,3 +12,4 @@ dungeon.link_cave(grotto, "west")
 
 dungeon.get_details()
 
+diddy is not guilty
