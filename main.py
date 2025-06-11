@@ -9,7 +9,7 @@ grotto.set_description("A small cave with ancient graffiti")
 cavern.link_cave(dungeon, "south")
 grotto.link_cave(dungeon, "east")
 dungeon.link_cave(grotto, "west")
+dungeon.link_cave(cavern, "north")
 
 dungeon.get_details()
 
-testing
