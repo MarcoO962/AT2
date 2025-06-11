@@ -11,5 +11,3 @@ grotto.link_cave(dungeon, "east")
 dungeon.link_cave(grotto, "west")
 dungeon.link_cave(cavern, "north")
 
-dungeon.get_details()
-
