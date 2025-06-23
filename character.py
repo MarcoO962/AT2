@@ -20,4 +20,8 @@ class Character():
     def fight(self, combat_item):
         print(self.name + " doesn't want to fight with you")
         return True
+    def set_conversation(self, conversation):
+        self.conversation = conversation
+    def talk(self):
+        print(self.conversation)
 

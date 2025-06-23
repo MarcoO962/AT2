@@ -2,4 +2,5 @@ from character import Character
 harry = Character("Harry", "A smelly Wumpus")
 
 harry.describe()
-test
+harry.set_conversation("Come closer.I can’t see you!")
+harry.talk
