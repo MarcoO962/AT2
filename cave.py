@@ -12,7 +12,7 @@ class Cave:
     def get_name(self):
         return self.name
     def describe(self):
-        print(self.description)
+        print(self.description) 
     def link_cave(self, cave_to_link, direction):
         self.linked_caves[direction] = cave_to_link
     def get_details(self):
