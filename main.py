@@ -1,4 +1,5 @@
 from cave import Cave
+from character import Enemy
 
 cavern = Cave("Cavern")
 cavern.set_description("A dank and dirty cave ")
@@ -17,3 +18,4 @@ while True:
     current_cave.get_details()         
     command = input("> ")    
     current_cave = current_cave.move(command)  
+
