@@ -1,5 +1,6 @@
 from cave import Cave
-from character import Enemy
+from character import Enemy, Friend
+from character import Character
 
 cavern = Cave("Cavern")
 cavern.set_description("A dank and dirty cave ")
@@ -16,9 +17,14 @@ harry = Enemy("Harry", "A smelly Wumpus")
 harry.set_conversation("Hangry…Hanggrry")
 harry.set_weakness("vegemite")
 dungeon.set_character(harry)
+josephine = Friend("Josephine", "A friendly bat")
+josephine.set_conversation("Gidday")
+grotto.set_character(josephine)
 
+
+dead = False
 current_cave = cavern          
-while True:		
+while dead == False:	
     print("\n")         
     current_cave.get_details()         
     inhabitant = current_cave.get_character()
@@ -43,8 +49,20 @@ while True:
                 current_cave.set_character(None)
             else:
                 print("Scurry home, you lost the fight.")
+                print("That's the end of the game")
+                dead = True
         else:
             print("There is no one here to fight with")
+    elif command == "pat":
+        if inhabitant is not None:
+            if isinstance(inhabitant, Enemy):
+                print("I wouldn't do that if I were you…")
+            else:
+                inhabitant.pat()
+        else:
+            print("There is no one here to pat :(")
+
+        
 
 
 
