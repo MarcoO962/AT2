@@ -1,6 +1,6 @@
 from cave import Cave
 from character import Enemy, Friend
-from character import Character
+from item import Item
 
 cavern = Cave("Cavern")
 cavern.set_description("A dank and dirty cave ")
@@ -12,6 +12,14 @@ cavern.link_cave(dungeon, "south")
 grotto.link_cave(dungeon, "east")
 dungeon.link_cave(grotto, "west")
 dungeon.link_cave(cavern, "north")
+
+vegemite = Item("vegemite")
+vegemite.set_description("A Wumpuses worst nightmare")
+grotto.set_item(vegemite)
+torch = Item("torch")
+torch.set_description("A light for the end of the tunnel")
+dungeon.set_item(torch)
+bag = []
 
 harry = Enemy("Harry", "A smelly Wumpus")
 harry.set_conversation("Hangry…Hanggrry")
@@ -27,11 +35,13 @@ current_cave = cavern
 while dead == False:	
     print("\n")         
     current_cave.get_details()         
+    item = current_cave.get_item()
+    if item is not None:
+        item.describe()
     inhabitant = current_cave.get_character()
     if inhabitant is not None:
         inhabitant.describe()
-    command = input("> ")
-    current_cave = current_cave.move(command)      
+    command = input("> ")     
     if command in ["north", "south", "east", "west"]:
         current_cave = current_cave.move(command)  
     elif command == "talk":
@@ -43,14 +53,17 @@ while dead == False:
             # Fight with the inhabitant, if there is one
             print("What will you fight with?")
             fight_with = input()
-            if inhabitant.fight(fight_with) == True:
-                # What happens if you win?
-                print("Bravo,hero you won the fight!")
-                current_cave.set_character(None)
+            if fight_with in bag:
+                if inhabitant.fight(fight_with) == True:
+                    # What happens if you win?
+                    print("Bravo,hero you won the fight!")
+                    current_cave.set_character(None)
+                else:
+                    print("Scurry home, you lost the fight.")
+                    print("That's the end of the game")
+                    dead = True
             else:
-                print("Scurry home, you lost the fight.")
-                print("That's the end of the game")
-                dead = True
+                print("You don't have a " + fight_with)
         else:
             print("There is no one here to fight with")
     elif command == "pat":
@@ -61,6 +74,12 @@ while dead == False:
                 inhabitant.pat()
         else:
             print("There is no one here to pat :(")
+    elif command == "take":
+        if item is not None:
+            print("You put the " + item.get_name() + " in your bag")
+            bag.append(item.get_name())
+            current_cave.set_item(None)
+
 
         
 

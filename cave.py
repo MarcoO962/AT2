@@ -4,6 +4,11 @@ class Cave:
         self.description = ""
         self.linked_caves = {}
         self.character = None
+        self.item = None
+    def get_item(self):
+        return self.item
+    def set_item(self, item_name):
+        self.item = item_name
     def set_character(self, cave_character):
         self.character = cave_character
     def get_character(self):

@@ -39,6 +39,10 @@ class Enemy(Character):
     def steal(self):
         print("You steal from " + self.name)
         # How will you decide what this character has to steal?
+        enemies_to_defeat = 0
+    def __init__(self, char_name, char_description):
+        Enemy.enemies_to_defeat = Enemy.enemies_to_defeat + 1
+
 class Friend(Character):
     def __init__(self, char_name, char_description):
         super().__init__(char_name, char_description)
