@@ -58,6 +58,10 @@ while dead == False:
                     # What happens if you win?
                     print("Bravo,hero you won the fight!")
                     current_cave.set_character(None)
+                    if Enemy.enemies_to_defeat == 0:
+                        print("Congratulations, you have survived another adventure!")
+                        dead = True
+
                 else:
                     print("Scurry home, you lost the fight.")
                     print("That's the end of the game")
