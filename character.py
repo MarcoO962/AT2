@@ -36,4 +36,5 @@ class Enemy(Character):
         else:
             print(self.name + " swallows you, little wimp")
             return False
+        
     
