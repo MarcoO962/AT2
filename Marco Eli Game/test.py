@@ -3,6 +3,7 @@ import turtle
 pen =  turtle.Turtle()
 screen = turtle.Screen()
 screen.screensize(640, 480)
+screen.setup(width=1280, height=960)
 screen.bgcolor("black")
 pen.speed(0)
 pen.hideturtle()
@@ -45,6 +46,14 @@ def activate_textbox():
         pen.penup()
     screen.listen()
 
+def update_details():
+    pen.penup()
+    pen.goto(-450, 270)
+    pen.pendown()
+    pen.pencolor("red")
+    pen.write("Too many characters!", font=("fixedsys", 20, "bold"))
+    pen.penup()
+    pen.pencolor("lime")
 # Key binding to simulate text box interaction
 screen.listen()
 screen.onkey(activate_textbox, "t")  # Press spacebar to trigger input
