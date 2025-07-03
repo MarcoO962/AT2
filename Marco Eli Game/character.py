@@ -1,56 +1,50 @@
-class Character():
-    def __init__(self, char_name, char_description):
+class Character:
+    def __init__(self, char_name, char_description, hp=10):
         self.name = char_name
         self.description = char_description
-        self.conversation = None
-    # Describe this character
+        self.hp = hp
+
     def describe(self):
-        print( self.name + " is here!" )
-        print( self.description )
-    # Set what this character will say when talked to
-    def set_conversation(self, conversation):
-        self.conversation = conversation
-    # Talk to this character
-    def talk(self):
-        if self.conversation is not None:
-            print("[" + self.name + " says]: " + self.conversation)
-        else:
-            print(self.name + " doesn't want to talk to you")
-    # Fight with this character
-    def fight(self, combat_item):
-        print(self.name + " doesn't want to fight with you")
-        return True
+        print(self.name + " is here!")
+        print(self.description)
 
 class Enemy(Character):
-    enemies_to_defeat = 0
-    def __init__(self, char_name, char_description):
-        super().__init__(char_name, char_description)
-        self.weakness = None
-        Enemy.enemies_to_defeat = Enemy.enemies_to_defeat + 1
-    def set_weakness(self, weakness):
-            self.weakness = weakness
-    def get_weakness(self):
-            return self.weakness
-    def fight(self, combat_item):
-        if combat_item == self.weakness:
-            Enemy.enemies_to_defeat = Enemy.enemies_to_defeat - 1
-            print("You fend " + self.name + " off with the " + combat_item )
+    def __init__(self, char_name, char_description, hp=10, damage=2):
+        super().__init__(char_name, char_description, hp)
+        self.damage = damage
+
+    def attack(self, player):
+        print(f"{self.name} attacks you for {self.damage} damage!")
+        player.take_damage(self.damage)
+
+    def take_damage(self, amount):
+        self.hp -= amount
+        print(f"{self.name} takes {amount} damage! ({self.hp} HP left)")
+        if self.hp <= 0:
+            print(f"{self.name} has been defeated!")
             return True
-        else:
-            print(self.name + " swallows you, little wimp")
-            return False
-    def steal(self):
-        print("You steal from " + self.name)
-        # How will you decide what this character has to steal?
-        
+        return False
 
-class Friend(Character):
-    def __init__(self, char_name, char_description):
-        super().__init__(char_name, char_description)
-        self.feeling = None
-    def pat(self):
-        print(self.name + " pats you back!")
-    # What other methods could your Friend class have?
+class Player(Character):
+    def __init__(self, name="Hero", hp=30):
+        super().__init__(name, "The brave adventurer", hp)
+        self.bag = []
+        self.score = 0
+        self.high_score = 0
 
+    def take_damage(self, amount):
+        self.hp -= amount
+        print(f"You take {amount} damage! ({self.hp} HP left)")
+        if self.hp <= 0:
+            print("You have died!")
+            return True
+        return False
 
-    
+    def heal(self, amount):
+        self.hp += amount
+        print(f"You heal {amount} HP! ({self.hp} HP now)")
+
+    def add_score(self, points):
+        self.score += points
+        if self.score > self.high_score:
+            self.high_score = self.score

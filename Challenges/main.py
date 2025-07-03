@@ -1,49 +1,49 @@
-from cave import Cave
+from room import room
 from character import Enemy, Friend
 from item import Item
 
-cavern = Cave("Cavern")
-cavern.set_description("A dank and dirty cave ")
-dungeon = Cave("Dungeon")
-dungeon.set_description("A large cave with a rack")
-grotto = Cave("Grotto")
-grotto.set_description("A small cave with ancient graffiti")
-cavern.link_cave(dungeon, "south")
-grotto.link_cave(dungeon, "east")
-dungeon.link_cave(grotto, "west")
-dungeon.link_cave(cavern, "north")
+roomrn = room("roomrn")
+roomrn.set_description("A dank and dirty room ")
+room = room("room")
+room.set_description("A large room with a rack")
+grotto = room("Grotto")
+grotto.set_description("A small room with ancient graffiti")
+roomrn.link_room(room, "south")
+grotto.link_room(room, "east")
+room.link_room(grotto, "west")
+room.link_room(roomrn, "north")
 
 vegemite = Item("vegemite")
 vegemite.set_description("A Wumpuses worst nightmare")
 grotto.set_item(vegemite)
 torch = Item("torch")
 torch.set_description("A light for the end of the tunnel")
-dungeon.set_item(torch)
+room.set_item(torch)
 bag = []
 
 harry = Enemy("Harry", "A smelly Wumpus")
 harry.set_conversation("Hangry…Hanggrry")
 harry.set_weakness("vegemite")
-dungeon.set_character(harry)
+room.set_character(harry)
 josephine = Friend("Josephine", "A friendly bat")
 josephine.set_conversation("Gidday")
 grotto.set_character(josephine)
 
 
 dead = False
-current_cave = cavern          
+current_room = roomrn          
 while dead == False:	
     print("\n")         
-    current_cave.get_details()         
-    item = current_cave.get_item()
+    current_room.get_details()         
+    item = current_room.get_item()
     if item is not None:
         item.describe()
-    inhabitant = current_cave.get_character()
+    inhabitant = current_room.get_character()
     if inhabitant is not None:
         inhabitant.describe()
     command = input("> ")     
     if command in ["north", "south", "east", "west"]:
-        current_cave = current_cave.move(command)  
+        current_room = current_room.move(command)  
     elif command == "talk":
     # Talk to the inhabitant - check whether there is one!
         if inhabitant is not None:
@@ -57,7 +57,7 @@ while dead == False:
                 if inhabitant.fight(fight_with) == True:
                     # What happens if you win?
                     print("Bravo,hero you won the fight!")
-                    current_cave.set_character(None)
+                    current_room.set_character(None)
                     if Enemy.enemies_to_defeat == 0:
                         print("Congratulations, you have survived another adventure!")
                         dead = True
@@ -82,7 +82,7 @@ while dead == False:
         if item is not None:
             print("You put the " + item.get_name() + " in your bag")
             bag.append(item.get_name())
-            current_cave.set_item(None)
+            current_room.set_item(None)
 
 
         

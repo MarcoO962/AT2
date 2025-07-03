@@ -1,91 +1,105 @@
-from cave import Cave
-from character import Enemy, Friend
-from item import Item
+from room import Room
+from character import Player
+from roomcontent import maybe_add_enemy, maybe_add_item
 
-cavern = Cave("Cavern")
-cavern.set_description("A dank and dirty cave ")
-dungeon = Cave("Dungeon")
-dungeon.set_description("A large cave with a rack")
-grotto = Cave("Grotto")
-grotto.set_description("A small cave with ancient graffiti")
-cavern.link_cave(dungeon, "south")
-grotto.link_cave(dungeon, "east")
-dungeon.link_cave(grotto, "west")
-dungeon.link_cave(cavern, "north")
-
-vegemite = Item("vegemite")
-vegemite.set_description("A Wumpuses worst nightmare")
-grotto.set_item(vegemite)
-torch = Item("torch")
-torch.set_description("A light for the end of the tunnel")
-dungeon.set_item(torch)
-bag = []
-
-harry = Enemy("Harry", "A smelly Wumpus")
-harry.set_conversation("Hangry…Hanggrry")
-harry.set_weakness("vegemite")
-dungeon.set_character(harry)
-josephine = Friend("Josephine", "A friendly bat")
-josephine.set_conversation("Gidday")
-grotto.set_character(josephine)
-
-
+player = Player()
+current_room = Room("Start Room")
+maybe_add_enemy(current_room)
+maybe_add_item(current_room)
 dead = False
-current_cave = cavern          
-while dead == False:	
-    print("\n")         
-    current_cave.get_details()         
-    item = current_cave.get_item()
-    if item is not None:
-        item.describe()
-    inhabitant = current_cave.get_character()
-    if inhabitant is not None:
-        inhabitant.describe()
-    command = input("> ")     
-    if command in ["north", "south", "east", "west"]:
-        current_cave = current_cave.move(command)  
-    elif command == "talk":
-    # Talk to the inhabitant - check whether there is one!
-        if inhabitant is not None:
-            inhabitant.talk()
-    elif command == "fight":
-        if inhabitant is not None and isinstance(inhabitant, Enemy):
-            # Fight with the inhabitant, if there is one
-            print("What will you fight with?")
-            fight_with = input()
-            if fight_with in bag:
-                if inhabitant.fight(fight_with) == True:
-                    # What happens if you win?
-                    print("Bravo,hero you won the fight!")
-                    current_cave.set_character(None)
-                    if Enemy.enemies_to_defeat == 0:
-                        print("Congratulations, you have survived another adventure!")
-                        dead = True
 
-                else:
-                    print("Scurry home, you lost the fight.")
-                    print("That's the end of the game")
+def show_room():
+    print("\n" + "="*40)
+    print(f"Location: {current_room.get_name()}")
+    print(current_room.get_description())
+    item = current_room.get_item()
+    if item:
+        print(f"Item here: {item.get_name()} - {item.description} (Damage: {item.get_damage()})")
+    enemy = current_room.get_character()
+    if enemy:
+        print(f"Enemy here: {enemy.name} - {enemy.description} (HP: {enemy.hp}, Damage: {enemy.damage})")
+    directions = list(current_room.linked_rooms.keys())
+    if directions:
+        print("Exits:", ", ".join(directions).upper())
+    else:
+        print("No exits yet. Try moving in any direction (north/south/east/west).")
+    print("="*40)
+
+def main_loop():
+    global current_room, dead
+    print("Welcome to the Endless Dungeon Crawler!")
+    while not dead:
+        show_room()
+        print(f"Your HP: {player.hp} | Score: {player.score} | High Score: {player.high_score}")
+        command = input("Command (north/south/east/west/take/fight/inventory/quit): ").strip().lower()
+        if command in ["north", "south", "east", "west"]:
+            enemy = current_room.get_character()
+            if enemy:
+                print(f"As you try to leave, {enemy.name} attacks you!")
+                enemy.attack(player)
+                if player.hp <= 0:
                     dead = True
+                    continue  # Don't move if dead
+            if not dead:
+                next_room = current_room.generate_next_room(command)
+                maybe_add_enemy(next_room)
+                maybe_add_item(next_room)
+                current_room = next_room
+                print(f"You move {command}.")
+        elif command == "take":
+            enemy = current_room.get_character()
+            if enemy:
+                print(f"As you try to take the item, {enemy.name} attacks you!")
+                enemy.attack(player)
+                if player.hp <= 0:
+                    dead = True
+                    continue  # Don't take the item if dead
+            if not dead:
+                item = current_room.get_item()
+                if item:
+                    player.bag.append(item)
+                    current_room.set_item(None)
+                    print(f"You put the {item.get_name()} in your bag.")
+                else:
+                    print("There is nothing to take.")
+        elif command == "fight":
+            enemy = current_room.get_character()
+            if enemy:
+                if not player.bag:
+                    print("You have nothing to fight with!")
+                    continue
+                print("Your bag:", ", ".join([i.get_name() for i in player.bag]))
+                weapon_name = input("What will you fight with? (type item name): ").strip().lower()
+                weapon = next((i for i in player.bag if i.get_name().lower() == weapon_name), None)
+                if weapon:
+                    print(f"You attack {enemy.name} with {weapon.get_name()} for {weapon.get_damage()} damage!")
+                    defeated = enemy.take_damage(weapon.get_damage())
+                    if defeated:
+                        current_room.set_character(None)
+                        print("Bravo, hero! You won the fight!")
+                        player.add_score(10)
+                    else:
+                        enemy.attack(player)
+                        if player.hp <= 0:
+                            dead = True
+                else:
+                    print("You don't have that item.")
             else:
-                print("You don't have a " + fight_with)
-        else:
-            print("There is no one here to fight with")
-    elif command == "pat":
-        if inhabitant is not None:
-            if isinstance(inhabitant, Enemy):
-                print("I wouldn't do that if I were you…")
+                print("There is no one here to fight with.")
+        elif command == "inventory":
+            if player.bag:
+                print("Your bag:")
+                for i in player.bag:
+                    print(f"- {i.get_name()} (Damage: {i.get_damage()})")
             else:
-                inhabitant.pat()
+                print("Your bag is empty.")
+        elif command == "quit":
+            print("Thanks for playing!")
+            break
         else:
-            print("There is no one here to pat :(")
-    elif command == "take":
-        if item is not None:
-            print("You put the " + item.get_name() + " in your bag")
-            bag.append(item.get_name())
-            current_cave.set_item(None)
+            print("Invalid command.")
 
+    print(f"Game Over! Final Score: {player.score} | High Score: {player.high_score}")
 
-        
-
-
-
+if __name__ == "__main__":
+    main_loop()
