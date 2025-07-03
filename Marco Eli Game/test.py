@@ -28,7 +28,15 @@ def activate_textbox():
     pen.pendown()
     pen.forward(400)
     pen.penup()
-    if user_text is not None:
+    if len(user_text) > 21:
+        pen.penup()
+        pen.goto(60, -80)
+        pen.pendown()
+        pen.pencolor("red")
+        pen.write("Too many characters!", font=("fixedsys", 20, "bold"))
+        pen.penup()
+        pen.pencolor("lime")
+    elif user_text is not None:
         # Clear old text if needed and display new one
         pen.penup()
         pen.goto(60, -80)
