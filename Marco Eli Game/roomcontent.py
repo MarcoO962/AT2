@@ -1,9 +1,8 @@
 import random
 from character import Enemy
 from item import Item
-from gui import pen, screen, 
 
-ENEMY_LIST = [
+ENEMY_LIST = [  # List of enemy types with their name, description, HP, and damage
     ("Goblin", "A sneaky green creature", 8, 2),
     ("Orc", "A brutish warrior", 15, 4),
     ("Wumpus", "A mysterious beast", 12, 3),
@@ -26,7 +25,7 @@ ENEMY_LIST = [
     ("Dragonling", "A young but fierce dragon", 14, 7)
 ]
 
-WEAPON_LIST = [
+WEAPON_LIST = [  # List of item types with their name and damage value
     ("Torch", 3),
     ("Vegemite", 5),
     ("Sword", 7),
@@ -46,16 +45,41 @@ WEAPON_LIST = [
     ("Halberd", 9),
     ("Scythe", 8),
     ("Whip", 5),
-    ("Boomerang", 4)
+    ("Boomerang", 4),
+    # Repeated entries for variety and randomness
+    ("Torch", 3),
+    ("Vegemite", 5),
+    ("Sword", 7),
+    ("Dagger", 4),
+    ("Potion", 0),
+    ("Axe", 8),
+    ("Mace", 6),
+    ("Bow", 5),
+    ("Crossbow", 6),
+    ("Spear", 7),
+    ("Magic Wand", 9),
+    ("Fire Bomb", 10),
+    ("Ice Staff", 8),
+    ("Silver Knife", 6),
+    ("Club", 4),
+    ("Morning Star", 7),
+    ("Halberd", 9),
+    ("Scythe", 8),
+    ("Whip", 5),
+    ("Boomerang", 4),
+    ("Atomic Bomb", 1000),  # Ultra-powerful item for fun/chaos
+    ("Potion", 0), ("Potion", 0), ("Potion", 0), ("Potion", 0),
+    ("Potion", 0), ("Potion", 0), ("Potion", 0), ("Potion", 0),
+    ("Potion", 0), ("Potion", 0), ("Potion", 0), ("Potion", 0)
 ]
 
-def maybe_add_enemy(room):
+def maybe_add_enemy(room):  # Randomly adds an enemy to the room with a 50% chance
     if random.random() < 0.5:
         name, desc, hp, dmg = random.choice(ENEMY_LIST)
         enemy = Enemy(name, desc, hp=hp, damage=dmg)
         room.set_character(enemy)
 
-def maybe_add_item(room):
+def maybe_add_item(room):  # Randomly adds an item to the room with a 50% chance
     if random.random() < 0.5:
         name, dmg = random.choice(WEAPON_LIST)
         item = Item(name, dmg)
